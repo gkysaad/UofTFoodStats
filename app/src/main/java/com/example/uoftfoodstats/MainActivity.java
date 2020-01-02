@@ -8,6 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,6 +24,17 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        final Document document;
+        TextView tv1 = (TextView)findViewById(R.id.textView);
+        try {
+
+            document = Jsoup.connect("https://eacct-utsc-sp.blackboard.com/eaccounts/AccountTransaction.aspx").get();
+            tv1.setText(document.outerHtml());
+        } catch (IOException e) {
+            System.out.println("fail");
+        }
+
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -26,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+
     }
 
     @Override
