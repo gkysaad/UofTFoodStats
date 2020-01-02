@@ -1,6 +1,9 @@
 package com.example.uoftfoodstats;
 
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -8,64 +11,62 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
+    TextView tv1;
+    Button bt1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        final Document document;
-        TextView tv1 = (TextView)findViewById(R.id.textView);
-        try {
+        tv1 = findViewById(R.id.textView);
+        bt1 = findViewById(R.id.button);
 
-            document = Jsoup.connect("https://eacct-utsc-sp.blackboard.com/eaccounts/AccountTransaction.aspx").get();
-            tv1.setText(document.outerHtml());
-        } catch (IOException e) {
-            System.out.println("fail");
-        }
-
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        bt1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                new doit().execute();
             }
         });
 
-
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+    public class doit extends AsyncTask<Void,Void,Void> {
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        Document document;
+        String text;
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            String url = "https://stackoverflow.com/questions/2835505";
+
+            try {
+                document = Jsoup.connect(url).get();
+                text = document.outerHtml();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
         }
 
-        return super.onOptionsItemSelected(item);
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            tv1.setText(text);
+        }
     }
 }
