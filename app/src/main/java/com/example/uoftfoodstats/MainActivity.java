@@ -54,12 +54,10 @@ public class MainActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
                 if (web.getUrl().contains("blackboard") & !firstRun){
                     Log.i("web", web.getUrl());
-                    //web.loadUrl("https://www.google.ca/");
+                    String[] urlArr = {web.getUrl()};
+                    new getHtml().execute(urlArr);
 
                 }
-                String htmlPage = getRemoteContent(web.getUrl());
-                Log.i("html",htmlPage);
-
                 firstRun = false;
                 Log.i("firstRun", Boolean.toString(firstRun));
             }
@@ -81,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 document = Jsoup.connect(url[0]).get();
                 text = document.outerHtml();
+                Log.i("html", text);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -88,10 +87,12 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
+
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            web.loadUrl("www.google.com");
+            web.reload();
+            Log.i("html","done");
         }
     }
 }
